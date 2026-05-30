@@ -1,0 +1,11 @@
+**/.git
+**/.vs
+**/.idea
+**/bin
+**/obj
+.env
+storage
+postgres
+certbot/conf
+certbot/www
+nginx/.htpasswd

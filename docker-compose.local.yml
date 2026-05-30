@@ -1,0 +1,17 @@
+services:
+  app:
+    depends_on:
+      - db
+
+  nginx:
+    ports:
+      - "${HTTP_PORT:-80}:80"
+    volumes:
+      - ./nginx/local-templates:/etc/nginx/templates:ro
+      - ./nginx/.htpasswd.local:/etc/nginx/.htpasswd:ro
+    depends_on:
+      - app
+
+  certbot:
+    profiles:
+      - edge

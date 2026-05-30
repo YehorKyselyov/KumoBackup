@@ -1,0 +1,55 @@
+services:
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: kumobackup_nginx
+    ports:
+      - "${HTTP_PORT}:80"
+      - "${HTTPS_PORT}:443"
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates:ro
+      - ${NGINX_HTPASSWD_PATH}:/etc/nginx/.htpasswd:ro
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    environment:
+      - KUMOBACKUP_DOMAIN=${KUMOBACKUP_DOMAIN}
+      - NGINX_CLIENT_MAX_BODY_SIZE=${NGINX_CLIENT_MAX_BODY_SIZE}
+    depends_on:
+      - app
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kumobackup_app
+    expose:
+      - "${APP_PORT}"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=${ASPNETCORE_URLS}
+      - ConnectionStrings__Default=Host=${POSTGRES_HOST};Port=${POSTGRES_PORT};Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - Storage__Path=${STORAGE_PATH}
+      - Backup__MaxUploadBytes=${BACKUP_MAX_UPLOAD_BYTES}
+      - KumoBackup__PublicUrl=${KUMOBACKUP_PUBLIC_URL}
+    volumes:
+      - ${HOST_STORAGE_PATH}:${STORAGE_PATH}
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    container_name: kumobackup_db
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - ${HOST_POSTGRES_PATH}:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt

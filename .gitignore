@@ -1,0 +1,8 @@
+.env
+storage/
+postgres/
+certbot/conf/
+certbot/www/
+nginx/.htpasswd
+bin/
+obj/
