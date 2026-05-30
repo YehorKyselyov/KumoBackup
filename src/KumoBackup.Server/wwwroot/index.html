@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KumoBackup</title>
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="assets/kumobackup-icon.png">
+  <link rel="apple-touch-icon" href="assets/kumobackup-icon.png">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="bar">
+        <div class="brand">
+          <img class="mark" src="assets/kumobackup-icon.png" alt="" aria-hidden="true">
+          <div>
+            <h1>KumoBackup</h1>
+            <p class="subtle">Token administration</p>
+          </div>
+        </div>
+        <a class="button secondary" href="swagger">Swagger</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel">
+        <form class="create" id="create-form">
+          <label>
+            Token name
+            <input id="token-name" name="name" autocomplete="off" maxlength="80" placeholder="Samsung S24" required>
+          </label>
+          <button class="button" id="create-button" type="submit">Create token</button>
+        </form>
+        <div class="token-box" id="token-box" aria-live="polite">
+          <div class="muted">New token</div>
+          <div class="token-row">
+            <div class="token-value" id="token-value"></div>
+            <button class="button secondary" id="copy-button" type="button">Copy</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="section-head">
+          <h2>API tokens</h2>
+          <span class="count" id="token-count">0 active</span>
+        </div>
+        <div class="table-wrap" id="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Created</th>
+                <th>Last used</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="token-rows"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="empty-state" hidden>No tokens</div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

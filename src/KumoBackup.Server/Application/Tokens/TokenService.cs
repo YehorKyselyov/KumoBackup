@@ -73,6 +73,20 @@ public sealed class TokenService(AppDbContext dbContext)
         return true;
     }
 
+    public async Task<bool> DeleteRevokedAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var token = await dbContext.ApiTokens.FindAsync([id], cancellationToken);
+        if (token?.RevokedAt is null)
+        {
+            return false;
+        }
+
+        dbContext.ApiTokens.Remove(token);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return true;
+    }
+
     public async Task<int> CountActiveAsync(CancellationToken cancellationToken) =>
         await dbContext.ApiTokens.CountAsync(token => token.RevokedAt == null, cancellationToken);
 

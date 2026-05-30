@@ -1,10 +1,35 @@
 using KumoBackup.Server.Application;
 using KumoBackup.Server.Infrastructure;
 using KumoBackup.Server.Infrastructure.Persistence;
+using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc(
+        "v1",
+        new OpenApiInfo
+        {
+            Title = "KumoBackup API",
+            Version = "v1",
+            Description = "Self-hosted Mihon backup storage API.",
+        });
+
+    options.AddSecurityDefinition(
+        "Bearer",
+        new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "KumoBackup API token",
+            In = ParameterLocation.Header,
+            Description = "Enter a KumoBackup API token. Example: kb_live_xxxxx",
+        });
+});
 builder.Services
     .AddApplication()
     .AddInfrastructure(builder.Configuration);
@@ -12,29 +37,29 @@ builder.Services
 var app = builder.Build();
 
 app.UseForwardedHeaders();
+app.UseSwagger(options =>
+{
+    options.PreSerializeFilters.Add((document, request) =>
+    {
+        var forwardedPrefix = request.Headers["X-Forwarded-Prefix"].ToString();
+        if (!string.IsNullOrWhiteSpace(forwardedPrefix))
+        {
+            document.Servers = [new OpenApiServer { Url = forwardedPrefix }];
+        }
+    });
+});
+app.UseSwaggerUI(options =>
+{
+    options.RoutePrefix = "swagger";
+    options.SwaggerEndpoint("v1/swagger.json", "KumoBackup API v1");
+});
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.MapControllers();
-app.MapGet("/", () => Results.Content("""
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KumoBackup</title>
-  <style>
-    body { font-family: system-ui, sans-serif; margin: 2rem; max-width: 48rem; line-height: 1.5; }
-    code { background: #f2f4f8; padding: .15rem .35rem; border-radius: .25rem; }
-  </style>
-</head>
-<body>
-  <h1>KumoBackup</h1>
-  <p>Server shell is running. Token management UI is the next web surface.</p>
-  <p>Health: <code>/api/health</code></p>
-</body>
-</html>
-""", "text/html"));
 
 using (var scope = app.Services.CreateScope())
 {
@@ -43,3 +68,5 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+
+public partial class Program;

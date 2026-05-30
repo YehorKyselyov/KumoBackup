@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/KumoBackup.Server/KumoBackup.Server.csproj" />
+    <Project Path="src/KumoBackup.Test/KumoBackup.Test.csproj" />
   </Folder>
 </Solution>
