@@ -89,3 +89,7 @@ Authorization: Bearer <token>
 ```
 
 Admin token management endpoints are intentionally exposed without app-level authentication because the expected deployment path is through Nginx Basic Auth at `/kumobackup`. Keep the app container private and route external traffic through Nginx.
+
+## License
+
+KumoBackup is released under the [MIT License](LICENSE).
