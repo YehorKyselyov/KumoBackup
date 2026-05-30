@@ -21,6 +21,11 @@ public sealed class ApiFlowTests(KumoBackupWebApplicationFactory factory)
         var token = await CreateTokenAsync(client);
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
 
+        var serverInfo = await client.GetFromJsonAsync<ServerInfoResponse>("/api/server/info");
+        Assert.NotNull(serverInfo);
+        Assert.Equal("KumoBackup", serverInfo.Name);
+        Assert.True(serverInfo.MaxUploadBytes > 0);
+
         await using var file = File.OpenRead(FixturePath);
         using var form = new MultipartFormDataContent
         {
