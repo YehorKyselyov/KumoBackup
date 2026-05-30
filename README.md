@@ -1,8 +1,22 @@
-# KumoBackup
+<p align="center">
+  <img src="src/KumoBackup.Server/wwwroot/assets/kumobackup-icon.png" alt="KumoBackup icon" width="112">
+</p>
 
-<img src="src/KumoBackup.Server/wwwroot/assets/kumobackup-icon.png" alt="KumoBackup icon" width="96">
+<h1 align="center">KumoBackup</h1>
 
-KumoBackup is a small self-hosted backup server for Mihon/Tachiyomi-style `.tachibk` backup files. It provides:
+<p align="center">
+  A small self-hosted backup server for Mihon/Tachiyomi-style <code>.tachibk</code> files.
+</p>
+
+<p align="center">
+  <a href="#local-quick-start">Quick start</a>
+  |
+  <a href="#create-a-token">Tokens</a>
+  |
+  <a href="#api-authentication">API auth</a>
+</p>
+
+KumoBackup is a small self-hosted backup server for Mihon/Tachiyomi-style `.tachibk` backup files
 
 
 ## Local Quick Start
